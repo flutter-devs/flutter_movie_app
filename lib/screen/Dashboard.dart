@@ -14,7 +14,6 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   Future<MovieItem> _movieList;
 
-  bool isLoading = false;
 
   @override
   void initState() {
@@ -30,31 +29,54 @@ class _DashboardState extends State<Dashboard> {
         appBar: AppBar(
           title: Text('Dashboard'),
           actions: <Widget>[
-            InkWell(
-              onTap: _getMovieDetails,
-              child: Icon(Icons.refresh),
+            PopupMenuButton<int>(
+              onSelected: _showMenuSelection,
+              itemBuilder: (BuildContext context) => <PopupMenuItem<int>>[
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Icon(Icons.refresh),
+                          Text('Refresh'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<int>(
+                      value: 1,
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Icon(Icons.exit_to_app),
+                          Text('Sign out'),
+                        ],
+                      ),
+                    ),
+                  ],
             ),
-            InkWell(
-              onTap: _logout,
-              child: Icon(Icons.exit_to_app),
-            )
           ],
         ),
         body: Container(
           child: FutureBuilder(
-            future: _movieList,
+            future: _getMovieDetails(),
             builder: (BuildContext context, AsyncSnapshot<MovieItem> snapshot) {
-              if (snapshot.data == null) {
+              if(snapshot.connectionState == ConnectionState.done){
+                if(snapshot.hasData){
+                  return ListView.builder(
+                    shrinkWrap: false,
+                    itemCount: snapshot.data.results.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _buildItem(index, snapshot.data.results[index]);
+                    },
+                  );
+                }else{
+                  return Center(
+                    child: Text('Error! Failed to load movies.'),
+                  );
+                }
+              }else{
                 return Center(
                   child: CircularProgressIndicator(),
-                );
-              } else {
-                return ListView.builder(
-                  shrinkWrap: false,
-                  itemCount: snapshot.data.results.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _buildItem(index, snapshot.data.results[index]);
-                  },
                 );
               }
             },
@@ -65,11 +87,9 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  void _getMovieDetails() {
+  Future<MovieItem> _getMovieDetails() {
     Future<MovieItem> items = ApiProvider.fetchMovieDetails();
-    setState(() {
-      _movieList = items;
-    });
+    return items;
   }
 
   Widget _buildItem(int index, Result item) {
@@ -84,34 +104,37 @@ class _DashboardState extends State<Dashboard> {
           bottom: 2.0,
         ),
         child: ListTile(
-          onTap: () => _moveToDetailsPage(item),
-          leading: new ClipRRect(
-            borderRadius: new BorderRadius.circular(5.0),
-            child: Image.network(
-              Constants.IMAGE_BASE_URL +
-                  Constants.IMAGE_SIZE_1 +
-                  '${item.poster_path}',
-              height: 80.0,
-              width: 80.0,
-              fit: BoxFit.cover,
+            onTap: () => _moveToDetailsPage(item),
+            leading: new ClipRRect(
+              borderRadius: new BorderRadius.circular(5.0),
+              child: Image.network(
+                Constants.IMAGE_BASE_URL +
+                    Constants.IMAGE_SIZE_1 +
+                    '${item.poster_path}',
+                height: 80.0,
+                width: 80.0,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          title: Text(
-            item.title,
-            style: TextStyle(
-              fontSize: 14.0,
+            title: Text(
+              item.title,
+              style: TextStyle(
+                fontSize: 14.0,
+              ),
             ),
-          ),
-          subtitle: Text(
-            item.overview,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 4,
-            style: TextStyle(
-              fontSize: 11.0,
+            subtitle: Container(
+              margin: EdgeInsets.only(top: 8.0),
+              child: Text(
+                item.overview,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 4,
+                style: TextStyle(
+                  fontSize: 11.0,
+                ),
+              ),
+            )
+            //trailing: Icon(Icons.keyboard_arrow_right),
             ),
-          ),
-          //trailing: Icon(Icons.keyboard_arrow_right),
-        ),
       ),
     );
   }
@@ -119,6 +142,13 @@ class _DashboardState extends State<Dashboard> {
   _moveToDetailsPage(Result item) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => MovieDetails(item)));
+  }
+
+  void _refresh() {
+    setState(() {
+      _movieList=null;
+    });
+    //_getMovieDetails();
   }
 
   void _logout() {
@@ -145,12 +175,27 @@ class _DashboardState extends State<Dashboard> {
             FlatButton(
               child: Text('Ok'),
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(Constants.SIGN_IN);
+                Navigator.of(context).pop();
+                _moveToSignIn();
               },
             ),
           ],
         );
       },
     );
+  }
+
+  void _moveToSignIn() {
+    Navigator.of(context).pushReplacementNamed(Constants.SIGN_IN);
+  }
+
+  void _showMenuSelection(int value) {
+    print(value);
+    if (value == 0) {
+      //_getMovieDetails();
+      _refresh();
+    } else if (value == 1) {
+      _logout();
+    }
   }
 }

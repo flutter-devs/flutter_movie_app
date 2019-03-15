@@ -38,11 +38,14 @@ class _SignUpState extends State<SignUp> {
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                  ),
                   FlutterLogo(
                     size: 80.0,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 20.0),
+                    padding: EdgeInsets.only(top: 30.0),
                   ),
                   TextFormField(
                     keyboardType: TextInputType.text,
@@ -50,6 +53,9 @@ class _SignUpState extends State<SignUp> {
                     decoration: InputDecoration(
                       labelText: 'Name',
                       hintText: 'Name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
                     ),
                     validator: (value) {
                       if (value.isEmpty) {
@@ -58,17 +64,26 @@ class _SignUpState extends State<SignUp> {
                     },
                     onSaved: (val) => _name = val,
                   ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.0),
+                  ),
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     controller: _emailIDController,
                     decoration: InputDecoration(
                       labelText: 'Email ID',
                       hintText: 'Email ID',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
                     ),
                     validator: (value) {
                       return FormValidator.validateEmail(value);
                     },
                     onSaved: (val) => _emailID = val,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.0),
                   ),
                   TextFormField(
                     obscureText: true,
@@ -77,6 +92,9 @@ class _SignUpState extends State<SignUp> {
                     decoration: InputDecoration(
                       labelText: 'Password',
                       hintText: 'Password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
                     ),
                     validator: (value) {
                       if (value.isEmpty) {
@@ -85,6 +103,9 @@ class _SignUpState extends State<SignUp> {
                     },
                     onSaved: (val) => _password = val,
                   ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.0),
+                  ),
                   TextFormField(
                     obscureText: true,
                     keyboardType: TextInputType.text,
@@ -92,6 +113,9 @@ class _SignUpState extends State<SignUp> {
                     decoration: InputDecoration(
                       labelText: 'Confirm Password',
                       hintText: 'Confirm Password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
                     ),
                     validator: (value) {
                       return FormValidator.validateConfirmPassword(

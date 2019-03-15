@@ -19,20 +19,22 @@ class _MovieDetailsState extends State<MovieDetails> {
       backgroundColor: Colors.white,
       body: Scaffold(
         appBar: AppBar(
-          title: Text('Movie Details'),
+          title: Text(widget.item.title),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        body: ListView(
           children: <Widget>[
             Container(
               width: double.infinity,
-              child: Image.network(
-                Constants.IMAGE_BASE_URL +
+              child: Image.network( Constants.IMAGE_BASE_URL +
                     Constants.IMAGE_SIZE_1 +
                     '${widget.item.poster_path}',
-                height: 420.0,
-                fit: BoxFit.fill,
+                    height: 420.0,
+                    fit: BoxFit.fill,
               ),
+              /*FadeInImage.assetNetwork(
+                placeholder: 'assets/images/ic_loading.gif',
+                image: 'https://github.com/flutter/website/blob/master/src/_includes/code/layout/lakes/images/lake.jpg?raw=true',
+              ),*/
             ),
             SizedBox(
               height: 10.0,

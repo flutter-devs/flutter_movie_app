@@ -36,22 +36,31 @@ class _SignInState extends State<SignIn> {
             child: new SingleChildScrollView(
                 child: Column(
               children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top: 20.0),
+                ),
                 FlutterLogo(
                   size: 80.0,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 20.0),
+                  padding: EdgeInsets.only(top: 30.0),
                 ),
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'Email ID',
                     hintText: 'Email ID',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
                   ),
                   validator: (value) {
                     return FormValidator.validateEmail(value);
                   },
                   onSaved: (val) => _emailID = val,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 8.0),
                 ),
                 TextFormField(
                   obscureText: true,
@@ -59,6 +68,9 @@ class _SignInState extends State<SignIn> {
                   decoration: InputDecoration(
                     labelText: 'Password',
                     hintText: 'Password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
                   ),
                   onSaved: (val) => _password = val,
                   validator: (value) {
@@ -136,6 +148,7 @@ class _SignInState extends State<SignIn> {
   }
 
   void _moveToDashboard() {
+    print('_moveToDashboard()');
     Navigator.of(context).pushReplacementNamed(Constants.DASHBOARD);
   }
 }
