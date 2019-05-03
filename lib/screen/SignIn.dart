@@ -21,10 +21,9 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //resizeToAvoidBottomPadding: true,
-      key: _scaffoldKey,
-      backgroundColor: Colors.white,
-      body: Scaffold(
+        //resizeToAvoidBottomPadding: true,
+        key: _scaffoldKey,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('Sign in'),
         ),
@@ -108,8 +107,7 @@ class _SignInState extends State<SignIn> {
             )),
           ),
         ),
-      ),
-    );
+      );
   }
 
   void _submitForm() {
